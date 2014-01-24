@@ -7,6 +7,7 @@
 # === Parameters
 #
 # [*server_name*]      - the host name of the server
+# [*server_port*]      - the port Apache will bind to
 # [*admin_email*]      - email address Apache will display when rendering error page
 # [*db_root_password*] - password for mysql root user
 # [*doc_root*]         - the DocumentRoot directory used by Apache
@@ -38,6 +39,7 @@
 #
 class mediawiki (
   $server_name,
+  $server_port    = '80',
   $admin_email,
   $db_root_password,
   $doc_root       = $mediawiki::params::doc_root,
@@ -63,6 +65,10 @@ class mediawiki (
   }
   class { 'apache::mod::php': }
   
+  apache::vhost { $server_name:
+    port    => $server_port,
+    docroot => $doc_root,
+  }
   
   # Manages the mysql server package and service by default
   class { 'mysql::server':
